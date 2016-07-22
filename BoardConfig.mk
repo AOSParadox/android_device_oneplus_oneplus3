@@ -20,31 +20,17 @@
 # Boldly go.
 USE_CLANG_PLATFORM_BUILD := true
 
-# Asserts
-TARGET_OTA_ASSERT_DEVICE := OnePlus3,oneplus3
-
-# Include
+# Include path
 TARGET_SPECIFIC_HEADER_PATH := device/oneplus/oneplus3/include
 
-BOARD_VENDOR := oneplus
+# Assertions
+TARGET_OTA_ASSERT_DEVICE := OnePlus3,oneplus3
 
 # Bootloader
 TARGET_NO_BOOTLOADER := true
 
 # Architecture
 ENABLE_CPUSETS := true
-
-# Kernel
-BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x237 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 cma=32M@0-0xffffffff
-KERNEL_DIR := kernel/oneplus/msm8996
-KERNEL_DEFCONFIG := cyanogenmod_oneplus3_defconfig
-TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
-
-# QCOM hardware
-BOARD_USES_QCOM_HARDWARE := false
-
-# ANT+
-BOARD_ANT_WIRELESS_DEVICE := "qualcomm-uart"
 
 # Audio
 AUDIO_FEATURE_ENABLED_ACDB_LICENSE := true
@@ -73,26 +59,27 @@ BOARD_HAVE_BLUETOOTH_QCOM := true
 QCOM_BT_USE_BTNV := true
 QCOM_BT_USE_SMD_TTY := true
 
-# Camera
-USE_DEVICE_SPECIFIC_CAMERA := true
-
-# Enable dexpreopt to speed boot time
+# Dex-opt
+# Enable dex pre-opt to speed up initial boot
 ifeq ($(HOST_OS),linux)
-  ifeq ($(call match-word-in-list,$(TARGET_BUILD_VARIANT),user),true)
-    ifeq ($(WITH_DEXPREOPT),)
       WITH_DEXPREOPT := true
-    endif
-  endif
 endif
 
+# GPS
+BOARD_VENDOR_QCOM_LOC_PDK_FEATURE_SET := true
 
 # Init
+TARGET_UNIFIED_DEVICE := true
 TARGET_INIT_VENDOR_LIB := libinit_oneplus3
 TARGET_RECOVERY_DEVICE_MODULES := libinit_oneplus3
-TARGET_PLATFORM_DEVICE_BASE := /devices/soc/
 
-# Lights
-TARGET_PROVIDES_LIBLIGHT := true
+# Kernel
+BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x237 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 cma=32M@0-0xffffffff
+BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive # Selinux permissive for bringup
+KERNEL_DIR := kernel/oneplus/msm8996
+KERNEL_DEFCONFIG := cyanogenmod_oneplus3_defconfig
+TARGET_RECOVERY_FSTAB := device/oneplus/oneplus3/ramdisk/fstab.qcom
+
 
 # NFC
 TARGET_USES_NQ_NFC := true
@@ -103,28 +90,32 @@ BOARD_CACHEIMAGE_PARTITION_SIZE := 268435456
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 67108864
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 3154116608
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 57436708864
-BOARD_FLASH_BLOCK_SIZE := 262144
 TARGET_USERIMAGES_USE_F2FS := true
 
-# Recovery
-TARGET_RECOVERY_FSTAB := device/oneplus/oneplus3/ramdisk/fstab.qcom
+# Lights
+TARGET_PROVIDES_LIBLIGHT := true
 
-# SELinux
+# QCOM hardware
+BOARD_USES_QCOM_HARDWARE := false
+
+# Sepolicy
 include device/qcom/sepolicy/sepolicy.mk
 BOARD_SEPOLICY_DIRS += device/oneplus/oneplus3/sepolicy
 
 # Wifi
 BOARD_HAS_QCOM_WLAN := true
 BOARD_HAS_QCOM_WLAN_SDK := true
-BOARD_WLAN_DEVICE := qcwcn
 BOARD_HOSTAPD_DRIVER := NL80211
-BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
+BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_qcwcn
+BOARD_WLAN_DEVICE := qcwcn
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
-BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_qcwcn
 WIFI_DRIVER_FW_PATH_AP := "ap"
 WIFI_DRIVER_FW_PATH_STA := "sta"
 WIFI_DRIVER_FW_PATH_P2P := "p2p"
+WIFI_DRIVER_MODULE_PATH := "/system/lib/modules/wlan.ko"
+WIFI_DRIVER_MODULE_NAME := "wlan"
 WPA_SUPPLICANT_VERSION := VER_0_8_X
 
-# inherit from the proprietary version
+# Inherit from the proprietary version
 -include vendor/oneplus/oneplus3/BoardConfigVendor.mk

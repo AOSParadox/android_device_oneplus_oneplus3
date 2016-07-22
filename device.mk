@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 
+# Call the proprietary setup
 $(call inherit-product-if-exists, vendor/oneplus/oneplus3/oneplus3-vendor.mk)
 
 # Ramdisk
@@ -23,13 +24,6 @@ PRODUCT_COPY_FILES += \
 # Prebuilt
 PRODUCT_COPY_FILES += \
     $(call find-copy-subdir-files,*,device/oneplus/oneplus3/prebuilt/system,system)
-
-# CAF Branch
-PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    ro.par.branch= LA.HB.1.3.1.c1-09600-8x96.0
-
-# CodeAurora msm8996 Tree
-include device/qcom/msm8994/msm8994.mk
 
 # Dalvik/HWUI
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -58,31 +52,30 @@ DEVICE_PACKAGE_OVERLAYS += device/oneplus/oneplus3/overlay
 PRODUCT_PACKAGE_OVERLAYS += device/oneplus/oneplus3/overlay
 
 # Device uses high-density artwork where available
-PRODUCT_AAPT_CONFIG := normal
+PRODUCT_AAPT_CONFIG += xxhdpi
 PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
-# Haters gonna hate..
+# CAF Branch
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    ro.par.branch= LA.HB.1.3.1.c1-09600-8x96.0
+
+# CodeAurora MSM8996 Device Tree
+$(call inherit-product, device/qcom/msm8996/msm8996.mk)
+
+# Haters gonna hate ..
 PRODUCT_CHARACTERISTICS := nosdcard
 
 # Camera
 PRODUCT_PACKAGES += \
     libcamera_shim
 
+# USB
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    persist.sys.usb.config=mtp
+
 # Doze mode
 PRODUCT_PACKAGES += \
     OneplusDoze
-
-# Fingerprint sensor
-PRODUCT_PACKAGES += \
-    fingerprintd
-
-# GPS
-PRODUCT_PACKAGES += \
-    gps.msm8996
-
-# Lights
-PRODUCT_PACKAGES += \
-    lights.msm8996
 
 # NFC
 PRODUCT_PACKAGES += \
@@ -94,7 +87,5 @@ PRODUCT_PACKAGES += \
     nqnfcse_access.xml \
     Tag
 
-# Power
-PRODUCT_PACKAGES += \
-    power.msm8996 \
-    power.qcom
+# Call the proprietary setup
+$(call inherit-product-if-exists, vendor/oneplus/oneplus3/oneplus3-vendor.mk)
